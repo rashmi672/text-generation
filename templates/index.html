@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sequence Generator</title>
+    <style>
+        body {
+            background-color: #222;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            background-color: #333;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            text-align: center;
+        }
+
+        label, input {
+            display: block;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            background-color: transparent;
+            border: none;
+            border-bottom: 2px solid #888; /* Underline for input fields */
+            color: #fff;
+        }
+
+        .btn {
+            border: none;
+            width: 15em;
+            height: 5em;
+            border-radius: 3em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            background: #1C1A1C;
+            cursor: pointer;
+            transition: all 450ms ease-in-out;
+            margin-top: 10px;
+        }
+
+        .sparkle {
+            fill: #AAAAAA;
+            transition: all 800ms ease;
+        }
+
+        .text {
+            font-weight: 600;
+            color: #AAAAAA;
+            font-size: medium;
+        }
+
+        .btn:hover {
+            background: linear-gradient(0deg, #A47CF3, #683FEA);
+            box-shadow: inset 0px 1px 0px 0px rgba(255, 255, 255, 0.4),
+            inset 0px -4px 0px 0px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn:hover .text {
+            color: white;
+        }
+
+        .btn:hover .sparkle {
+            fill: white;
+            transform: scale(1.2);
+        }
+
+        #generated-sequence {
+            display: none; /* Initially hidden */
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sequence Generator</h1>
+    <form id="sequence-form" method="POST" action="/generate">
+        <label for="prompt">Enter a prompt:</label>
+        <input type="text" name="prompt" id="prompt" required>
+        <label for="no_words">Number of words to generate:</label>
+        <input type="number" name="no_words" id="no_words" required>
+        <button class="btn" type="submit">
+            <svg height="24" width="24" fill="#FFFFFF" viewBox="0 0 24 24" data-name="Layer 1" id="Layer_1" class="sparkle">
+                <path d="M10,21.236,6.755,14.745.264,11.5,6.755,8.255,10,1.764l3.245,6.491L19.736,11.5l-6.491,3.245ZM18,21l1.5,3L21,21l3-1.5L21,18l-1.5-3L18,18l-3,1.5ZM19.333,4.667,20.5,7l1.167-2.333L24,3.5,21.667,2.333,20.5,0,19.333,2.333,17,3.5Z"></path>
+            </svg>
+            <span class="text">Generate</span>
+        </button>
+    </form>
+    <h2>Generated Sequence:</h2>
+    <p id="generated-sequence"></p>
+</body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('sequence-form');
+        const generatedSequence = document.getElementById('generated-sequence');
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(form);
+            fetch('/generate', {
+                method: 'POST',
+                body: formData,
+            })
+                .then(response => response.json())
+                .then(data => {
+                    generatedSequence.style.display = 'block'; // Show the generated sequence
+                    generatedSequence.textContent = data.generated_sequence;
+                });
+        });
+    });
+</script>
+</html>
